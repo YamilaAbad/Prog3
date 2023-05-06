@@ -1,0 +1,242 @@
+public class Main {
+    public static void main(String[] args) {
+        TreeWithNode a = new TreeWithNode();
+        a.insert(15);
+        a.insert(6);
+        a.insert(18);
+        a.insert(3);
+        a.insert(7);
+        a.insert(17);
+        a.insert(20);
+        a.insert(2);
+        a.insert(4);
+        a.insert(13);
+        a.insert(9);
+
+        System.out.print("PreOrden ");
+        a.printPreOrden(); //PreOrden 15 6 3 2 4 7 13 9 18 17 20
+        System.out.println("");
+
+        System.out.print("PosOrden ");
+        a.printPosOrden(); //PosOrden 2 4 3 9 13 7 6 17 20 18 15
+        System.out.println("");
+
+        System.out.print("InOrden ");
+        a.printInOrden(); //InOrden 2 3 4 6 7 9 13 15 17 18 20
+        System.out.println("");
+
+        System.out.println("raiz: "+a.getRoot()); // 15
+        System.out.println("¿Esta vacio? : "+a.isEmpty());// false
+
+        System.out.println(a.hasElem(7));//true
+        System.out.println(a.hasElem(1));//false
+
+        System.out.println("El elemento mayor es "+a.getMaxElem());
+        System.out.println("El elemento menor es "+a.getMinElem());
+        a.delete(7);
+
+    }
+}
+
+
+public class TreeNode {
+    private int value;
+    private TreeNode left;
+    private TreeNode right;
+
+    public TreeNode(int value) {
+        this.value = value;
+        this.left = this.right = null;
+    }
+
+    public TreeNode getLeft() {
+        return left;
+    }
+
+    public void setLeft(TreeNode left) {
+        this.left = left;
+    }
+
+    public TreeNode getRight() {
+        return right;
+    }
+
+    public void setRight(TreeNode right) {
+        this.right = right;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}
+
+public class TreeWithNode {
+    private TreeNode root;
+
+    public TreeWithNode() {
+        this.root = null;
+    }
+    public void insert(int value){
+        if(this.root == null){
+            this.root = new TreeNode(value);
+        }else{
+            this.insert(this.root, value);
+        }
+    }
+    private void insert(TreeNode actual, int _value){
+        if(actual.getValue() > _value){
+            //Inserto a la izquierda
+            if(actual.getLeft() == null){
+                TreeNode tmp = new TreeNode(_value);
+                actual.setLeft(tmp);
+            }else{
+                insert(actual.getLeft(), _value);
+            }
+        }else if(actual.getValue() < _value){
+            //Inserto a la derecha
+            if(actual.getRight() == null){
+                TreeNode tmp = new TreeNode(_value);
+                actual.setRight(tmp);
+            }else{
+                insert(actual.getRight(), _value);
+            }
+        }
+    }
+
+    public int getRoot() {
+        if(this.root != null){
+            return root.getValue();
+        }else{
+            return -1;
+        }
+    }
+    public boolean isEmpty(){
+        return this.root == null;
+    }
+    public  boolean hasElem(int _value){
+        return hasElem(this.root, _value);
+    }
+    private boolean hasElem(TreeNode _root, int _value){
+        if(_root != null){
+            if(_root.getValue() == _value){
+                return true;
+            }else if(_value < _root.getValue()){
+                return hasElem(_root.getLeft(), _value);
+            }else{
+                return hasElem(_root.getRight(), _value);
+            }
+        }else{
+            return false;
+        }
+    }
+
+    public int getMaxElem(){
+        return getMaxElem(root);
+    }
+    private int getMaxElem(TreeNode _root){//para encontrar el sucesor
+        if(_root != null){
+            if(_root.getRight() == null){
+                return _root.getValue();
+            }else{
+                return getMaxElem(_root.getRight());
+            }
+        }else{
+            return -1;
+        }
+    }
+    //Busco el menor elemento del abol
+    public int getMinElem(){ //para encontrar el predecesor
+
+        TreeNode minNode = getMinElem(root);
+        if (minNode != null) {
+            return minNode.getValue();
+        } else {
+            return -1;
+        }
+    }
+    private TreeNode getMinElem(TreeNode node) {
+        if (node == null) {
+            return null;
+        } else if (node.getLeft() == null) {
+            return node;
+        } else {
+            return getMinElem(node.getLeft());
+        }
+    }
+    public boolean delete(int _value){
+        TreeNode tmp = root;
+        if(tmp!=null){
+            /**
+             * tomamos el valor
+             * es igual
+             *          lo encontramos
+             *          es hoja?
+             *                  si = no existe
+             *                  no, es menor?
+             *                      a la izq
+             *                      a la derecha
+             */
+            tmp= eliminarNodo(tmp,_value);
+        }
+        return tmp==null;
+
+    }
+
+    private TreeNode eliminarNodo(TreeNode nodo,int  _value){
+        if(nodo.getLeft() == null && nodo.getRight()==null && nodo.getValue()!=_value){
+            return null;
+        }else{
+            if (nodo.getValue()<_value){
+
+            }
+        }
+
+    }
+
+    private void deleteNode (TreeNode node, int _value){
+        TreeNode aux;
+        if(node.getValue() > _value){
+            aux= node.getLeft();
+            TreeNode padrepromover = getMinElem(aux.getRight());
+            TreeNode promover = padrepromover.getLeft();
+            node.setLeft(promover);
+            promover.setLeft(aux.getLeft());
+            promover.setRight(aux.getRight());
+            padrepromover.setLeft(null);
+
+        }
+    }
+
+    //Ordenamientos
+    private void inOrden(TreeNode _root) {
+        if(_root != null){
+            inOrden(_root.getLeft());
+            System.out.print(_root.getValue()+" ");
+            inOrden(_root.getRight());
+        }
+    }
+    public void printInOrden(){
+        this.inOrden(this.root);
+    }
+    private void posOrden(TreeNode _root) {
+        if(_root != null){
+            posOrden(_root.getLeft());
+            posOrden(_root.getRight());
+            System.out.print(_root.getValue()+" ");
+        }
+    }
+    public void printPosOrden(){
+        this.posOrden(this.root);
+    }
+    private void preOrden(TreeNode _root) {
+        if(_root != null){
+            System.out.print(_root.getValue()+" ");
+            preOrden(_root.getLeft());
+            preOrden(_root.getRight());
+        }
+    }
+    public void printPreOrden(){
+        this.preOrden(this.root);
+    }
+}
+
